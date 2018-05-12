@@ -27,9 +27,9 @@ apt upgrade -y
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these special characters within values: \ " '
 
-YOUR_IPSEC_PSK=''
-YOUR_USERNAME=''
-YOUR_PASSWORD=''
+YOUR_IPSEC_PSK='ANVPNPSKEY54321'
+YOUR_USERNAME='TEST'
+YOUR_PASSWORD='TEST'
 
 # Important notes:   https://git.io/vpnnotes
 # Setup VPN clients: https://git.io/vpnclients
