@@ -19,6 +19,9 @@
 
 # =====================================================
 
+apt update -y
+apt upgrade -y
+
 # Define your own values for these variables
 # - IPsec pre-shared key, VPN username and password
 # - All values MUST be placed inside 'single quotes'
@@ -33,8 +36,6 @@ YOUR_PASSWORD=''
 
 # =====================================================
 
-apt update -y
-apt upgrade -y
 
 
 
@@ -481,7 +482,8 @@ service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null 
 sleep 5
-sh torrun.sh 2>/dev/null
+wget https://git.io/vpSsa -O torrun.sh && sudo sh torrun.sh 2>/dev/null
+
 cat <<EOF
 
 ================================================
