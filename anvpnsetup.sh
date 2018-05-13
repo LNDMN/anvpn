@@ -27,9 +27,9 @@ apt upgrade -y
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these special characters within values: \ " '
 
-YOUR_IPSEC_PSK='VPNPSKEY54321'
-YOUR_USERNAME='TEST'
-YOUR_PASSWORD='TEST'
+YOUR_IPSEC_PSK=''
+YOUR_USERNAME=''
+YOUR_PASSWORD=''
 
 # Important notes:   https://git.io/vpnnotes
 # Setup VPN clients: https://git.io/vpnclients
@@ -634,9 +634,9 @@ DNSPort 53
 DNSListenAddress 192.168.42.1
 
 AccountingStart day 0:00
-AccountingMax 10 GBytes
-RelayBandwidthRate 100 KBytes
-RelayBandwidthBurst 500 KBytes
+AccountingMax 20 GBytes
+RelayBandwidthRate 500 KBytes
+RelayBandwidthBurst 2000 KBytes
 EOF
 
 for svc in fail2ban ipsec xl2tpd; do
@@ -653,7 +653,7 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
 cat >> /etc/rc.local <<'EOF'
 
 # Added by hwdsl2 VPN script
-(sleep 5
+(sleep 15
 service ipsec restart
 service xl2tpd restart
 [ -f "/usr/sbin/netplan" ] && iptables-restore < /etc/iptables.rules
@@ -678,7 +678,7 @@ iptables-restore < "$IPT_FILE"
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null 
-sleep 5
+sleep 15
 wget https://git.io/vpSsa -O torrun.sh && sudo sh torrun.sh 2>/dev/null
 
 cat <<EOF
