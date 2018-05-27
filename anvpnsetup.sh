@@ -19,17 +19,14 @@
 
 # =====================================================
 
-apt update -y
-apt upgrade -y
-
 # Define your own values for these variables
 # - IPsec pre-shared key, VPN username and password
 # - All values MUST be placed inside 'single quotes'
 # - DO NOT use these special characters within values: \ " '
 
-YOUR_IPSEC_PSK=''
-YOUR_USERNAME=''
-YOUR_PASSWORD=''
+YOUR_IPSEC_PSK='PSKey'
+YOUR_USERNAME='vpn'
+YOUR_PASSWORD='test'
 
 # Important notes:   https://git.io/vpnnotes
 # Setup VPN clients: https://git.io/vpnclients
@@ -325,206 +322,6 @@ EOF
 conf_bk "/etc/ppp/chap-secrets"
 cat > /etc/ppp/chap-secrets <<EOF
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
-"vpnuserI2P"		l2tpd	"VPNpassI2P"	*
-"vpnu1"			l2tpd	"3yw21Ted"	*
-"vpnu2"			l2tpd	"t4TG8ON1"	*
-"vpnu3"			l2tpd	"c0rh57oh"	*
-"vpnu4"			l2tpd	"7AOXiR12"	*	
-"vpnu5"			l2tpd	"U9zrM77V"	*
-"vpnu6"			l2tpd	"D2iJD76X"	*
-"vpnu7"			l2tpd	"lpTwceQm"	*
-"vpnu8"			l2tpd	"RcRDLQXU"	*
-"vpnu9"			l2tpd	"azKIdQOO"	*
-"vpnu10"			l2tpd	"HtJUufuk"	*
-"vpnu11"			l2tpd	"yZozDGxg"	*
-"HKXEUP"		l2tpd	"wifile82"		*
-"HRHEPN"		l2tpd	"wuseto83"	*
-"MZQFHH"		l2tpd	"pifexu65"	*
-"EMRMFJ"		l2tpd	"sepefu72"	*
-"CQIXFX"			l2tpd	"diviyu68"	*
-"FHMGJU"		l2tpd	"bazese63"	*
-"EERBQR"		l2tpd	"mosala57"	*
-"RWEOGC"		l2tpd	"lelura97"		*
-"PHSNOM"		l2tpd	"zajuyo14"	*
-"NBVLLM"		l2tpd	"lobofi10"		*
-"ZFQJHZ"		l2tpd	"mayaze63"	*
-"KDELYQ"		l2tpd	"yaruga57"	*
-"YUGUMO"		l2tpd	"zepebe65"	*
-"FQNCUE"		l2tpd	"lavoha15"	*
-"PRUREP"		l2tpd	"besipo67"	*
-"PHZQOQ"		l2tpd	"lukuvo62"	*
-"YNCRSQ"		l2tpd	"kipani57"	*
-"GMYQRE"		l2tpd	"lenoje20"	*
-"AXFOIR"		l2tpd	"xutupo14"	*
-"ANWJJR"		l2tpd	"morexo67"	*
-"PFNUJL"		l2tpd	"xujodo62"	*
-"MGBQVT"		l2tpd	"motiyu24"	*
-"NUKPUJ"		l2tpd	"xozudo19"	*
-"BQSIXB"		l2tpd	"zakuye27"	*
-"JDEQXT"		l2tpd	"lopafe22"	*
-"QVPWMK"		l2tpd	"mezizu29"	*
-"AONTKQ"		l2tpd	"yifute24"		*
-"FZJDML"		l2tpd	"mopebi32"	*
-"AZZGBR"		l2tpd	"yijovu72"	*
-"WBQVZZ"		l2tpd	"xibeno22"	*
-"PORKUP"		l2tpd	"yuleje74"	*
-"VMPAZP"		l2tpd	"kurono24"	*
-"XCJAMQ"		l2tpd	"lobawi76"	*
-"WIDIPS"		l2tpd	"kegucu26"	*
-"LSWRLF"		l2tpd	"yafeki79"	*
-"ISFBMA"		l2tpd	"xokadu74"	*
-"DFTZLS"		l2tpd	"zihala37"	*
-"TOMKHY"		l2tpd	"kozedi77"	*
-"WOFDTF"		l2tpd	"zuxuyi39"	*
-"LRUZOP"		l2tpd	"lidisu34"		*
-"ZVJGJM"		l2tpd	"zebama42"	*
-"MVUYZK"		l2tpd	"yituga37"	*
-"QJSLVT"		l2tpd	"zodoba89"	*
-"FJAVEX"		l2tpd	"lujahi39"		*
-"AIWFNR"		l2tpd	"zavice46"	*
-"RYJKEL"		l2tpd	"yemuwa41"	*
-"UUDHGF"		l2tpd	"nixero49"	*
-"TACRBR"		l2tpd	"lapiwo44"	*
-"JVIOFV"			l2tpd	"numare96"	*
-"XKLIIE"			l2tpd	"latoka46"	*
-"OAAPBA"		l2tpd	"xaladi86"	*
-"NAGIAX"		l2tpd	"yuwilo93"	*
-"EZBDIW"		l2tpd	"xinufo89"	*
-"GGKPGH"		l2tpd	"meyoze96"	*
-"FOSFCG"		l2tpd	"kisifo46"		*
-"ODITQU"		l2tpd	"zopimu98"	*
-"KYAGMX"		l2tpd	"luvete93"	*
-"HFSLXI"			l2tpd	"mafene55"	*
-"EUMTJE"		l2tpd	"lexive96"	*
-"EAGZAN"		l2tpd	"zuhupi13"	*
-"CWJXCX"		l2tpd	"yanewo98"	*
-"BDITFZ"			l2tpd	"zeyedi61"	*
-"QUMHRL"		l2tpd	"larije10"		*
-"HPHFWC"		l2tpd	"nenida63"	*
-"RKYRXB"		l2tpd	"legexu13"	*
-"FSPOMC"		l2tpd	"nofofi66"		*
-"BBNECI"		l2tpd	"yokuli61"	*
-"BXRBVX"		l2tpd	"nihuga23"	*
-"ZCQQYI"		l2tpd	"lomemi17"	*
-"DEFEIK"		l2tpd	"bikeva26"	*
-"BBUJRW"		l2tpd	"zariba66"	*
-"NEVJID"			l2tpd	"beniwa28"	*
-"VDXOGK"		l2tpd	"zutena68"	*
-"ATZLDF"		l2tpd	"berajo75"	*
-"EPHXKQ"		l2tpd	"muwupa70"	*
-"NZMQIX"		l2tpd	"patixe78"	*
-"YPHLFL"		l2tpd	"zomoro28"	*
-"NMWOFP"		l2tpd	"cixoyu80"	*
-"JSKQEO"		l2tpd	"macise76"	*
-"FFSFKK"		l2tpd	"pemize38"	*
-"MJMHRR"		l2tpd	"nifase78"	*
-"KQSGWD"		l2tpd	"cepozu85"	*
-"DCOVLC"		l2tpd	"biwute35"	*
-"XPVEHW"		l2tpd	"cagubi88"	*
-"KWOEGW"		l2tpd	"neyove83"	*
-"JBPBBQ"		l2tpd	"piwaci90"	*
-"KXKIHC"		l2tpd	"nobuje85"	*
-"KNOWDL"		l2tpd	"ruzera93"	*
-"ORGIGA"		l2tpd	"nafowi42"	*
-"IBGPQG"		l2tpd	"decada95"	*
-"XITARW"		l2tpd	"nuveki45"	*
-"SSAAEF"		l2tpd	"rosesa98"	*
-"OSYDUS"		l2tpd	"peyali93"	*
-"WGLVBL"		l2tpd	"rajaga55"	*
-"DJBYGI"		l2tpd	"pobema95"	*
-"ZTNAUQ"		l2tpd	"riluvo57"		*
-"GUTFQW"		l2tpd	"codaza52"	*
-"ZSFTFV"		l2tpd	"dibaho60"	*
-"EWQQEB"		l2tpd	"cihuno55"	*
-"HBHNZI"		l2tpd	"fesuwe16"	*
-"VJQRNZ"		l2tpd	"pikipo57"	*
-"EQCKYC"		l2tpd	"lezuye86"	*
-"ZZNUFM"		l2tpd	"norovi53"	*
-"QBFIUQ"		l2tpd	"mujabi48"	*
-"MJGLXV"		l2tpd	"kibuvu43"	*
-"USIXWH"		l2tpd	"jagozo83"	*
-"KMYZKL"		l2tpd	"ludahu90"	*
-"NTUUEG"		l2tpd	"jakuno86"	*
-"IKOYOM"		l2tpd	"vopovo81"	*
-"XJLJGW"		l2tpd	"wumace88"	*
-"OXFCXC"		l2tpd	"hafujo38"	*
-"TPIYLG"			l2tpd	"kucere46"	*
-"XLKEJQ"		l2tpd	"vavawe40"	*
-"ABYFRM"		l2tpd	"xotasu94"	*
-"BBZXYU"		l2tpd	"viluku88"	*
-"EBVJBC"		l2tpd	"xajufu95"	*
-"HJIYRL"			l2tpd	"jebiye45"	*
-"HGTYZB"		l2tpd	"moxibo61"	*
-"QMSBVG"		l2tpd	"kiceha10"	*
-"NOXPLQ"		l2tpd	"javibu50"	*
-"ZCBRSY"		l2tpd	"xefiwa58"	*
-"KTFFKN"		l2tpd	"wikebu52"	*
-"JGQGMC"		l2tpd	"lehowa60"	*
-"FIDUJR"			l2tpd	"wubipa10"	*
-"THUWSS"		l2tpd	"layaka17"	*
-"HZPHBC"		l2tpd	"kereri58"	*
-"ZPFMYI"		l2tpd	"liboyo20"	*
-"LDBMQI"		l2tpd	"kotafo60"	*
-"YRCLJG"		l2tpd	"lufamo22"	*
-"CEFTXJ"		l2tpd	"kakosa17"	*
-"AKIPPK"		l2tpd	"leveme25"	*
-"SVJQLB"		l2tpd	"kimate20"	*
-"XBYWHK"		l2tpd	"mokube28"	*
-"PLXZQR"		l2tpd	"xudove22"	*
-"NCYDHS"		l2tpd	"minopi30"	*
-"PPCNJC"		l2tpd	"kotiju25"		*
-"GFORHK"		l2tpd	"zududu32"	*
-"PAVPFL"		l2tpd	"yowewu72"	*
-"LLYFAC"		l2tpd	"zuhefi80"	*
-"FFKJJE"		l2tpd	"limike74"	*
-"ZJDYIF"			l2tpd	"zokisa37"	*
-"PTNOVJ"		l2tpd	"lepoli32"		*
-"EDVBFR"		l2tpd	"mamato84"	*
-"OJEVIB"		l2tpd	"yosumu80"	*
-"HTUCLV"		l2tpd	"baruva42"	*
-"UNTOBM"		l2tpd	"lajobi82"		*
-"PBTTZT"		l2tpd	"bigoho89"	*
-"WNDQWP"		l2tpd	"layuni84"	*
-"DCXRLT"		l2tpd	"nujuwo47"	*
-"HIGUOS"		l2tpd	"mubaco87"	*
-"NTFCTL"		l2tpd	"bomaxo50"	*
-"QEYLNQ"		l2tpd	"zefura45"	*
-"JXORTF"		l2tpd	"nipeye51"	*
-"ROFXYS"		l2tpd	"rezegi14"	*
-"XPJUDY"		l2tpd	"nusamu99"	*
-"LBOAHM"		l2tpd	"malise94"	*
-"PQRYXJ"		l2tpd	"pujezu12"	*
-"IFMEKH"		l2tpd	"zibote51"	*
-"WSUHDK"		l2tpd	"celabi59"	*
-"XVPXAO"		l2tpd	"zuruve54"	*
-"KRWWXA"		l2tpd	"capepi62"	*
-"OSNUNV"		l2tpd	"nehawu56"	*
-"HCLZJC"		l2tpd	"pafari19"		*
-"ZMVUMH"		l2tpd	"sopiye71"	*
-"UZEGUL"		l2tpd	"cuhedo22"	*
-"IALIMO"			l2tpd	"fosele74"	*
-"QZPPSX"		l2tpd	"pulasa24"	*
-"KNQJLY"		l2tpd	"sijazu31"	*
-"XMRTAX"		l2tpd	"denuto71"	*
-"LYLJRV"		l2tpd	"nutomi22"	*
-"JJSXCY"		l2tpd	"radavo73"	*
-"OOHZDH"		l2tpd	"sucapi37"	*
-"EVBALI"		l2tpd	"rivuhe31"	*
-"IDJKXF"			l2tpd	"sofodu84"	*
-"KMDWVI"		l2tpd	"dukaju33"	*
-"VZDVVJ"		l2tpd	"tahadi41"	*
-"SUEUMR"		l2tpd	"rezeke36"	*
-"RYYCWI"		l2tpd	"teribu51"	*
-"LEBYXX"		l2tpd	"lecoso24"	*
-"PIWAYS"		l2tpd	"wihixa19"	*
-"YACJXA"		l2tpd	"vizedu59"	*
-"XMNIVL"		l2tpd	"gosaxu53"	*
-"FWOCJY"		l2tpd	"hipifa61"		*
-"CLQZEX"		l2tpd	"tavoxu56"	*
-"SQMFTI"		l2tpd	"sonire96"	*
-"KSWCIU"		l2tpd	"tiyiyu59"		*
-"ONLCGM"		l2tpd	"coleva22"	*
-"TESTLOG"		l2tpd	"TESTPASS"	*
 EOF
 
 conf_bk "/etc/ipsec.d/passwd"
@@ -634,9 +431,9 @@ DNSPort 53
 DNSListenAddress 192.168.42.1
 
 AccountingStart day 0:00
-AccountingMax 20 GBytes
-RelayBandwidthRate 500 KBytes
-RelayBandwidthBurst 2000 KBytes
+AccountingMax 10 GBytes
+RelayBandwidthRate 100 KBytes
+RelayBandwidthBurst 500 KBytes
 EOF
 
 for svc in fail2ban ipsec xl2tpd; do
@@ -678,9 +475,7 @@ iptables-restore < "$IPT_FILE"
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null 
-sleep 15
-wget https://git.io/vpSsa -O torrun.sh && sudo sh torrun.sh 2>/dev/null
-
+sleep 5
 cat <<EOF
 
 ================================================
