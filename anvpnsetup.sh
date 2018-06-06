@@ -445,7 +445,7 @@ service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null 
 sleep 10
-sh torrun.sh
+sudo sh ./anvpn/torrun.sh
 cat <<EOF
 ================================================
 IPsec and L2TP  VPN + TOR server is now ready for use!
