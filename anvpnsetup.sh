@@ -1,41 +1,10 @@
 #!/bin/sh
-#
-# Script for automatic setup of an IPsec VPN server on Ubuntu LTS and Debian.
-# Works on any dedicated server or virtual private server (VPS) except OpenVZ.
-#
-# DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC!
-#
-# The latest version of this script is available at:
-# https://github.com/hwdsl2/setup-ipsec-vpn
-#
-# Copyright (C) 2014-2017 Lin Song <linsongui@gmail.com>
-# Based on the work of Thomas Sarlandie (Copyright 2012)
-#
-# This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
-# Unported License: http://creativecommons.org/licenses/by-sa/3.0/
-#
-# Attribution required: please include my name in any derivative and let me
-# know how you have improved it!
 
-# =====================================================
 
-# Define your own values for these variables
-# - IPsec pre-shared key, VPN username and password
-# - All values MUST be placed inside 'single quotes'
-# - DO NOT use these special characters within values: \ " '
 
 YOUR_IPSEC_PSK=''
 YOUR_USERNAME=''
 YOUR_PASSWORD=''
-
-# Important notes:   https://git.io/vpnnotes
-# Setup VPN clients: https://git.io/vpnclients
-
-# =====================================================
-
-apt update -y
-apt upgrade -y
-
 
 
 
@@ -109,9 +78,9 @@ fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   bigecho "VPN credentials not set by user. Generating random PSK and password..."
-  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
-  VPN_USER=vpnuser
-  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 8)"
+  VPN_USER=user
+  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 8)"
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
@@ -131,12 +100,14 @@ esac
 bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
+
 mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
 bigecho "Populating apt-get cache..."
 
 # Wait up to 60s for apt/dpkg lock
+
 count=0
 while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1; do
   [ "$count" -ge "20" ] && exiterr "Cannot get apt/dpkg lock."
@@ -162,6 +133,7 @@ EOF
 
 # In case auto IP discovery fails, enter server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
+
 
 # Try to auto discover IP of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
@@ -444,6 +416,8 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
     echo '#!/bin/sh' > /etc/rc.local
   fi
 cat >> /etc/rc.local <<'EOF'
+
+
 # Added by hwdsl2 VPN script
 (sleep 15
 service ipsec restart
@@ -470,16 +444,18 @@ iptables-restore < "$IPT_FILE"
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null 
-sleep 5
-sh torrun.sh 2>/dev/null
+sleep 10
+sh torrun.sh
 cat <<EOF
 ================================================
-IPsec VPN server is now ready for use!
+IPsec and L2TP  VPN + TOR server is now ready for use!
 Connect to your new VPN with these details:
+
 Server IP: $PUBLIC_IP
 IPsec PSK: $VPN_IPSEC_PSK
 Username: $VPN_USER
 Password: $VPN_PASSWORD
+
 Write these down. You'll need them to connect!
 Important notes:   https://git.io/vpnnotes
 Setup VPN clients: https://git.io/vpnclients
