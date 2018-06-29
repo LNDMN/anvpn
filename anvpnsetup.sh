@@ -78,9 +78,9 @@ fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   bigecho "VPN credentials not set by user. Generating random PSK and password..."
-  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 8)"
-  VPN_USER=user
-  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 8)"
+  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+  VPN_USER=vpnuser
+  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
@@ -100,14 +100,12 @@ esac
 bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
-
 mkdir -p /opt/src
 cd /opt/src || exiterr "Cannot enter /opt/src."
 
 bigecho "Populating apt-get cache..."
 
 # Wait up to 60s for apt/dpkg lock
-
 count=0
 while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1; do
   [ "$count" -ge "20" ] && exiterr "Cannot get apt/dpkg lock."
@@ -133,7 +131,6 @@ EOF
 
 # In case auto IP discovery fails, enter server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
-
 
 # Try to auto discover IP of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
@@ -198,11 +195,13 @@ DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
 version 2.0
+
 config setup
   virtual-private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
   protostack=netkey
   interfaces=%defaultroute
   uniqueids=no
+
 conn shared
   left=%defaultroute
   leftid=$PUBLIC_IP
@@ -218,6 +217,7 @@ conn shared
   ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512
   phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512
   sha2-truncbug=yes
+
 conn l2tp-psk
   auto=add
   leftprotoport=17/1701
@@ -225,11 +225,12 @@ conn l2tp-psk
   type=transport
   phase2=esp
   also=shared
+
 conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
   rightaddresspool=$XAUTH_POOL
-  modecfgdns="127.0.0.1"
+  modecfgdns="DNS_SRV2"
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes
@@ -262,6 +263,7 @@ conf_bk "/etc/xl2tpd/xl2tpd.conf"
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
+
 [lns default]
 ip range = $L2TP_POOL
 local ip = $L2TP_LOCAL
@@ -279,7 +281,7 @@ cat > /etc/ppp/options.xl2tpd <<EOF
 +mschap-v2
 ipcp-accept-local
 ipcp-accept-remote
-ms-dns 127.0.0.1
+ms-dns $DNS_SRV1
 noccp
 auth
 mtu 1280
@@ -314,11 +316,13 @@ if ! grep -qs "hwdsl2 VPN script" /etc/sysctl.conf; then
     SHM_ALL=268435456
   fi
 cat >> /etc/sysctl.conf <<EOF
+
 # Added by hwdsl2 VPN script
 kernel.msgmnb = 65536
 kernel.msgmax = 65536
 kernel.shmmax = $SHM_MAX
 kernel.shmall = $SHM_ALL
+
 net.ipv4.ip_forward = 1
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.all.accept_redirects = 0
@@ -330,6 +334,7 @@ net.ipv4.conf.default.send_redirects = 0
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.conf.$net_iface.send_redirects = 0
 net.ipv4.conf.$net_iface.rp_filter = 0
+
 net.core.wmem_max = 12582912
 net.core.rmem_max = 12582912
 net.ipv4.tcp_rmem = 10240 87380 12582912
@@ -398,6 +403,7 @@ TransPort 9040
 TransListenAddress 192.168.42.1
 DNSPort 53
 DNSListenAddress 192.168.42.1
+
 AccountingStart day 0:00
 AccountingMax 10 GBytes
 RelayBandwidthRate 100 KBytes
@@ -416,7 +422,6 @@ if ! grep -qs "hwdsl2 VPN script" /etc/rc.local; then
     echo '#!/bin/sh' > /etc/rc.local
   fi
 cat >> /etc/rc.local <<'EOF'
-
 
 # Added by hwdsl2 VPN script
 (sleep 15
@@ -443,12 +448,14 @@ iptables-restore < "$IPT_FILE"
 # Restart services
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
-service xl2tpd restart 2>/dev/null 
-sleep 10
-sudo sh ./anvpn/torrun.sh
+service xl2tpd restart 2>/dev/null
+
 cat <<EOF
+
 ================================================
-IPsec and L2TP  VPN + TOR server is now ready for use!
+
+L2TP VPN+TOR\ Cisco IPsec server is now ready for use!
+
 Connect to your new VPN with these details:
 
 Server IP: $PUBLIC_IP
@@ -457,9 +464,12 @@ Username: $VPN_USER
 Password: $VPN_PASSWORD
 
 Write these down. You'll need them to connect!
+
 Important notes:   https://git.io/vpnnotes
 Setup VPN clients: https://git.io/vpnclients
+
 ================================================
+
 EOF
 
 }
@@ -468,3 +478,4 @@ EOF
 vpnsetup "$@"
 
 exit 0
+
