@@ -78,9 +78,9 @@ fi
 
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
   bigecho "VPN credentials not set by user. Generating random PSK and password..."
-  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+  VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 8)"
   VPN_USER=vpnuser
-  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+  VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 8)"
 fi
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
@@ -296,6 +296,278 @@ EOF
 conf_bk "/etc/ppp/chap-secrets"
 cat > /etc/ppp/chap-secrets <<EOF
 "$VPN_USER" l2tpd "$VPN_PASSWORD" *
+"vpnuser" l2tpd "3Mn3qxTBrqgYufj6" *
+"wHtA3R8c" l2tpd "pe8G4Ar6Es" *
+"Wx2HwhrV" l2tpd "j36RJMSs24" *
+"P3ebxT8p" l2tpd "Q9XBTy3cwr" *
+"gR83jqBT" l2tpd "MR9bjurAmE" *
+"jw4emLUX" l2tpd "kzWQ7SNphv" *
+"pYF3aUhd" l2tpd "skG5tLEJhu" *
+"Nq9V7rBK" l2tpd "he7XVKB5Cx" *
+"rDg3JnG9" l2tpd "gG2wZKe6nW" *
+"a2sZqYdX" l2tpd "twXgJ7Ba4r" *
+"Mu7dV2kJ" l2tpd "kU97HeZ5Fu" *
+"MoCareful" l2tpd "bobudo68" *
+"MoSlim" l2tpd "nuvufe28" *
+"MoGrotesque" l2tpd "zizale68" *
+"MoSecret" l2tpd "lofiso18" *
+"MoFree" l2tpd "welaxa58" *
+"MoAfraid" l2tpd "haruri53" *
+"MoMotionless" l2tpd "xebiya61" *
+"MoRacial" l2tpd "vugefi10" *
+"MoEmbarrassed" l2tpd "giyile50" *
+"MoIntelligent" l2tpd "hejiti58" *
+"MoFunctional" l2tpd "tipole98" *
+"MoLaughable" l2tpd "jozata60" *
+"MoFrequent" l2tpd "tusimi10" *
+"MoFlashy" l2tpd "fixegu50" *
+"MoZany" l2tpd "govonu13" *
+"MoModern" l2tpd "sebihu98" *
+"MoNice" l2tpd "vayupi60" *
+"MoMeasly" l2tpd "jujixo22" *
+"MoAwake" l2tpd "vibopa17" *
+"MoCute" l2tpd "fatuwi12" *
+"MoTangible" l2tpd "vusiro20" *
+"MoAmuck" l2tpd "jocelo73" *
+"MoNumberless" l2tpd "hehoso67" *
+"MoUpbeat" l2tpd "jifamu29" *
+"MoIgnorant" l2tpd "voxite70" *
+"MoWholesale" l2tpd "kuvebe32" *
+"MoTacit" l2tpd "vinavo27" *
+"MoTested" l2tpd "kuyacu35" *
+"MoSpotted" l2tpd "wudehe30" *
+"MoSnobbish" l2tpd "xebucu38" *
+"MoSwift" l2tpd "jetowu77" *
+"MoSalty" l2tpd "kofara40" *
+"MoDistinct" l2tpd "zepala92" *
+"MoSimple" l2tpd "kihesa87" *
+"MoDamaged" l2tpd "zesezo94" *
+"MoPast" l2tpd "xuxasa89" *
+"MoStrong" l2tpd "zojino52" *
+"MoFirst" l2tpd "yeneta92" *
+"MoLively" l2tpd "maloce55" *
+"MoGrandiose" l2tpd "yodave49" *
+"MoGiddy" l2tpd "zubice56" *
+"MoGreat" l2tpd "liguwe97" *
+"MoReminiscent" l2tpd "nufodu59" *
+"MoTense" l2tpd "papoyi67" *
+"MoSmelly" l2tpd "bahasi17" *
+"MoPricey" l2tpd "pusumo24" *
+"MoBeneficial" l2tpd "baxega19" *
+"MoLonely" l2tpd "cevemo26" *
+"QuFrantic" l2tpd "nunugi21" *
+"QuUseless" l2tpd "rolubo29" *
+"QuOverrated" l2tpd "siwuwe82" *
+"QuYummy" l2tpd "donape77" *
+"QuDelicious" l2tpd "suloku39" *
+"QuRabid" l2tpd "dusiru34" *
+"QuPerpetual" l2tpd "fepulu41" *
+"QuEnormous" l2tpd "ruhose37" *
+"QuGifted" l2tpd "tafozi89" *
+"QuStanding" l2tpd "hucava96" *
+"QuOutgoing" l2tpd "gawuma46" *
+"QuTidy" l2tpd "votuvo54" *
+"QuFuturistic" l2tpd "guyabi48" *
+"QuIll-informed" l2tpd "howiwe11" *
+"QuPathetic" l2tpd "tuneco96" *
+"QuEmpty" l2tpd "wayuxu14" *
+"QuCharming" l2tpd "xokefi21" *
+"QuVerdant" l2tpd "jupaye61" *
+"QuFierce" l2tpd "kozati24" *
+"QuUtopian" l2tpd "wesozu19" *
+"QuAutomatic" l2tpd "lacevi26" *
+"QuAnnoyed" l2tpd "johimu66" *
+"QuDemonic" l2tpd "lugiva73" *
+"QuAbnormal" l2tpd "wayobu23" *
+"QuNutty" l2tpd "yewojo76" *
+"QuComplex" l2tpd "zitoru38" *
+"QuFaulty" l2tpd "loyika33" *
+"QuFanatical" l2tpd "bikife86" *
+"QuOdd" l2tpd "yopeye81" *
+"QuOrganic" l2tpd "bumagi88" *
+"QuQuarrelsome" l2tpd "lifilo83" *
+"QuZealous" l2tpd "nopigu46" *
+"QuRuddy" l2tpd "cimeno98" *
+"QuGlistening" l2tpd "bogovi94" *
+"QuHungry" l2tpd "redaco11" *
+"QuCloudy" l2tpd "najewa50" *
+"QuMighty" l2tpd "dotude13" *
+"QuSelfish" l2tpd "nuyaxi98" *
+"QuJazzy" l2tpd "daxafo16" *
+"QuAbsurd" l2tpd "fivizu23" *
+"HyWorried" l2tpd "dazufo18" *
+"HyQuickest" l2tpd "guxebi25" *
+"HyUgliest" l2tpd "vivewo79" *
+"HyAbsent" l2tpd "tababi73" *
+"HyOld" l2tpd "hiluwo80" *
+"HyThoughtful" l2tpd "tiropa76" *
+"HyHeavy" l2tpd "vunoxo83" *
+"HyMean" l2tpd "gugara78" *
+"HyHandsome" l2tpd "jeruyo40" *
+"HyAberrant" l2tpd "tekofa35" *
+"HyGentle" l2tpd "wavoze43" *
+"HyUncovered" l2tpd "geziso83" *
+"HySlippery" l2tpd "jaxizu45" *
+"HyDefiant" l2tpd "hayuvi35" *
+"HyEvanescent" l2tpd "wehaka87" *
+"HyWasteful" l2tpd "jokeya89" *
+"HyKnotty" l2tpd "siwuxi34" *
+"HySticky" l2tpd "sulali81" *
+"HyReady" l2tpd "gucuza84" *
+"HyInnate" l2tpd "gefazi86" *
+"HyJittery" l2tpd "rapadi86" *
+"HyMisty" l2tpd "dufusi88" *
+"HyShocking" l2tpd "rewiga46" *
+"HyAback" l2tpd "releto93" *
+"HySecretive" l2tpd "xozuho78" *
+"HyImaginary" l2tpd "xarove35" *
+"HyExcellent" l2tpd "yigeju83" *
+"HyHellish" l2tpd "lejaku85" *
+"HyWakeful" l2tpd "yozulu88" *
+"HyAcid" l2tpd "yopaya45" *
+"HySloppy" l2tpd "yigeza47" *
+"HyHanging" l2tpd "zijina51" *
+"HyFumbling" l2tpd "melupo98" *
+"HyBrief" l2tpd "devofu68" *
+"HyLean" l2tpd "daxuta25" *
+"HyGiant" l2tpd "dizeti72" *
+"HyCapricious" l2tpd "ridiva74" *
+"HyUnique" l2tpd "dugowa33" *
+"HyObeisant" l2tpd "sowuxe35" *
+"HyVacuous" l2tpd "somoxo37" *
+"HyAloof" l2tpd "wovana97" *
+"HyPrecious" l2tpd "wiyuba55" *
+"HyDefective" l2tpd "wubaco57" *
+"HyVast" l2tpd "jerere60" *
+"HyAhead" l2tpd "zozeta74" *
+"HyResonant" l2tpd "zapuva76" *
+"HyThree" l2tpd "nisovo34" *
+"HyTan" l2tpd "bijuja37" *
+"YeTeeny" l2tpd "neloxo39" *
+"YeBoring" l2tpd "boniye41" *
+"YeDapper" l2tpd "soxena12" *
+"YeFunny" l2tpd "famaca14" *
+"YeSubsequent" l2tpd "sureco16" *
+"YeSedate" l2tpd "getado20" *
+"YeMassive" l2tpd "tejefe66" *
+"YeExtra-small" l2tpd "xefova36" *
+"YeAccurate" l2tpd "xavijo39" *
+"YeItchy" l2tpd "xixowa86" *
+"YeFast" l2tpd "kinixe44" *
+"YeFluttering" l2tpd "yurele46" *
+"YePlausible" l2tpd "logime48" *
+"YeSuper" l2tpd "papepa63" *
+"YeRobust" l2tpd "cifore66" *
+"YeAwful" l2tpd "pijuro69" *
+"YeGaping" l2tpd "pulose26" *
+"YeLarge" l2tpd "cebege28" *
+"YeSore" l2tpd "rasivu30" *
+"YeDazzling" l2tpd "hamake46" *
+"YePurple" l2tpd "hapolo93" *
+"YeGrouchy" l2tpd "hutuye96" *
+"YeWorthless" l2tpd "hewemu53" *
+"YeDispensable" l2tpd "halini56" *
+"YeUnarmed" l2tpd "yohedo25" *
+"YeOrdinary" l2tpd "maxofe28" *
+"YeDelicate" l2tpd "zizefe30" *
+"YeAcoustic" l2tpd "meratu33" *
+"YeAssorted" l2tpd "vimiba22" *
+"YeLoutish" l2tpd "hiroco25" *
+"YeBelligerent" l2tpd "wugudo73" *
+"YeGainful" l2tpd "jejodo76" *
+"YeHigh" l2tpd "jazeso32" *
+"YeShivering" l2tpd "japote34" *
+"YeJumpy" l2tpd "wiguge82" *
+"YeAmused" l2tpd "wejovu40" *
+"YeDidactic" l2tpd "kolewu42" *
+"YeDetailed" l2tpd "novelu57" *
+"YeHarmonious" l2tpd "xufuxa47" *
+"YeWeary" l2tpd "kuhala95" *
+"YeAngry" l2tpd "nudinu65" *
+"YeVoracious" l2tpd "netepu22" *
+"YeSilly" l2tpd "yifepo57" *
+"YePossessive" l2tpd "livape59" *
+"YeLoud" l2tpd "cipufo29" *
+"YeRedundant" l2tpd "pesega76" *
+"YeFalse" l2tpd "pewive79" *
+"YeNaive" l2tpd "polawe36" *
+"YeSpiteful" l2tpd "ricuku84" *
+"YeLow" l2tpd "refoxu86" *
+"YeRelieved" l2tpd "rovulu89" *
+"YeHeavenly" l2tpd "hedune59" *
+"YeTwo" l2tpd "vatipo16" *
+"YeCurved" l2tpd "vawedu64" *
+"YeLavish" l2tpd "humidu66" *
+"YePumped" l2tpd "hepose23" *
+"YeBouncy" l2tpd "xutepo36" *
+"YeSteep" l2tpd "yipufo88" *
+"YeSore" l2tpd "vebari33" *
+"YeTalented" l2tpd "vorofi80" *
+"YeYoung" l2tpd "watito83" *
+"YeMoldy" l2tpd "jikovo85" *
+"YeCourageous" l2tpd "gibeji36" *
+"YeGuarded" l2tpd "gidiwi82" *
+"YeCrooked" l2tpd "guveka85" *
+"YeEfficacious" l2tpd "tokala87" *
+"YeWrong" l2tpd "bunona40" *
+"YeEasy" l2tpd "xocane78" *
+"YeUnwieldy" l2tpd "jehuve28" *
+"YeNear" l2tpd "vinazo68" *
+"YeUppity" l2tpd "soguti62" *
+"YeBlack" l2tpd "delaze12" *
+"YeNecessary" l2tpd "sajohi20" *
+"YePiquant" l2tpd "rabumi15" *
+"YeRipe" l2tpd "guyeha67" *
+"YeWandering" l2tpd "difani17" *
+"YeStereotyped" l2tpd "tucajo25" *
+"YeSoft" l2tpd "vimaro77" *
+"YeAbrupt" l2tpd "tofuxo27" *
+"YeWomanly" l2tpd "wucese35" *
+"YeMinor" l2tpd "gawaye74" *
+"YeGrateful" l2tpd "wugige82" *
+"YeStale" l2tpd "taleze32" *
+"YeThundering" l2tpd "jejohu84" *
+"YeRight" l2tpd "hubimu35" *
+"YePetite" l2tpd "womahu42" *
+"YeSpotty" l2tpd "hesebe37" *
+"YeUbiquitous" l2tpd "wapewa89" *
+"YeUnderstood" l2tpd "vavipu39" *
+"YeEntertaining" l2tpd "wifuxi92" *
+"YeHealthy" l2tpd "hixeri42" *
+"YeUnsightly" l2tpd "xewela49" *
+"YeMerciful" l2tpd "hubiri89" *
+"YeKindhearted" l2tpd "xeyulo97" *
+"YeFeigned" l2tpd "vudefa92" *
+"YeThreatening" l2tpd "xibemo54" *
+"YeMalicious" l2tpd "heguga48" *
+"YeElegant" l2tpd "xusine11" *
+"YeDefeated" l2tpd "joxeva96" *
+"YeCheap" l2tpd "xevape14" *
+"YeUnbiased" l2tpd "wamiva99" *
+"YeCeaseless" l2tpd "xelice62" *
+"YeSable" l2tpd "zijela70" *
+"YeVenomous" l2tpd "lanore64" *
+"YeProductive" l2tpd "zuyoli26" *
+"YeHalting" l2tpd "yirusu21" *
+"YePastoral" l2tpd "monezi74" *
+"YeTranquil" l2tpd "lihoti69" *
+"YeFearless" l2tpd "mafano31" *
+"YeHumdrum" l2tpd "cupiwe84" *
+"YeDear" l2tpd "bihena33" *
+"YeGodly" l2tpd "cefexe41" *
+"YeLearned" l2tpd "bixace36" *
+"YeMellow" l2tpd "cowike89" *
+"YeDeranged" l2tpd "bunero38" *
+"YeZippy" l2tpd "dileli91" *
+"YeFive" l2tpd "berife86" *
+"YeThin" l2tpd "dubimu93" *
+"YeVague" l2tpd "bovutu89" *
+"YeMute" l2tpd "desoba96" *
+"YeClever" l2tpd "focewo59" *
+"YeMelted" l2tpd "devani53" *
+"testlog" l2tpd "testpass" *
+"test" l2tpd "test" *
+"testing" l2tpd "testing" *
 EOF
 
 conf_bk "/etc/ipsec.d/passwd"
@@ -375,6 +647,9 @@ if [ "$ipt_flag" = "1" ]; then
   iptables -A FORWARD -j DROP
   iptables -t nat -I POSTROUTING -s "$XAUTH_NET" -o "$net_iface" -m policy --dir out --pol none -j MASQUERADE
   iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o "$net_iface" -j MASQUERADE
+  # VPN to Tor Routing
+  iptables -t nat -A PREROUTING -i ppp+ -p udp --dport 53 -j REDIRECT --to-ports 5353
+  iptables -t nat -A PREROUTING -i ppp+ -p tcp --syn -j REDIRECT --to-ports 9040
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 
@@ -401,7 +676,7 @@ VirtualAddrNetworkIPv4 10.192.0.0/10
 AutomapHostsOnResolve 1
 TransPort 9040
 TransListenAddress 192.168.42.1
-DNSPort 53
+DNSPort 5353
 DNSListenAddress 192.168.42.1
 
 AccountingStart day 0:00
@@ -449,7 +724,9 @@ iptables-restore < "$IPT_FILE"
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
+/etc/init.d/tor restart 2>/dev/null
 
+ sleep 2
 cat <<EOF
 
 ================================================
@@ -478,4 +755,3 @@ EOF
 vpnsetup "$@"
 
 exit 0
-
