@@ -165,9 +165,9 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
 
-bigecho "Installing packages required for the VPN..."
+bigecho "Installing packages required for the VPN + TOR"
 
-apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
+apt-get -yq install tor libnss3-dev libnspr4-dev pkg-config \
   libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
   libcurl4-nss-dev flex bison gcc make libnss3-tools \
   libevent-dev ppp xl2tpd || exiterr2
@@ -437,6 +437,20 @@ cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
 exit 0
+EOF
+
+cat >> /etc/tor/torrc <<'EOF'
+# Added by hwdsl2 VPN script
+VirtualAddrNetworkIPv4 10.192.0.0/10
+AutomapHostsOnResolve 1
+TransPort 9040
+TransListenAddress 192.168.42.1
+DNSPort 53
+DNSListenAddress 192.168.42.1
+ AccountingStart day 0:00
+AccountingMax 100 GBytes
+RelayBandwidthRate 500 KBytes
+RelayBandwidthBurst 1000 KBytes
 EOF
 
 for svc in fail2ban ipsec xl2tpd; do
