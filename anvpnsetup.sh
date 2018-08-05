@@ -440,7 +440,8 @@ exit 0
 EOF
 
 cat >> /etc/tor/torrc <<'EOF'
-# Added by hwdsl2 VPN script
+# Added by LNDMN VPN + TOR script
+ExcludeNodes {ru}, {ua}, {by}
 VirtualAddrNetworkIPv4 10.192.0.0/10
 AutomapHostsOnResolve 1
 TransPort 9040
