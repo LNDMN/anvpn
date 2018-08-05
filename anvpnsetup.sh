@@ -433,6 +433,7 @@ EOF
 
 cat >> /etc/tor/torrc <<'EOF'
 # Added by LNDMN  VPN + TOR script
+ExcludeNodes {ru}, {ua}, {by}
 VirtualAddrNetworkIPv4 10.192.0.0/10
 AutomapHostsOnResolve 1
 TransPort 9040
@@ -441,8 +442,8 @@ DNSPort 53
 DNSListenAddress 192.168.42.1
  AccountingStart day 0:00
 AccountingMax 10 GBytes
-RelayBandwidthRate 100 KBytes
-RelayBandwidthBurst 500 KBytes
+RelayBandwidthRate 500 KBytes
+RelayBandwidthBurst 1000 KBytes
 EOF
 
 for svc in fail2ban ipsec xl2tpd; do
