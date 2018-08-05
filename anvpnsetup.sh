@@ -8,7 +8,7 @@
 # The latest version of this script is available at:
 # https://github.com/hwdsl2/setup-ipsec-vpn
 #
-# Copyright (C) 2014-2017 Lin Song <linsongui@gmail.com>
+# Copyright (C) 2014-2018 Lin Song <linsongui@gmail.com>
 # Based on the work of Thomas Sarlandie (Copyright 2012)
 #
 # This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
@@ -73,9 +73,9 @@ net_iface=${VPN_NET_IFACE:-'eth0'}
 def_iface="$(route 2>/dev/null | grep '^default' | grep -o '[^ ]*$')"
 [ -z "$def_iface" ] && def_iface="$(ip -4 route list 0/0 2>/dev/null | grep -Po '(?<=dev )(\S+)')"
 
-def_iface_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
-if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
-  if [ "$(uname -m | cut -c1-3)" != "arm" ]; then
+def_state=$(cat "/sys/class/net/$def_iface/operstate" 2>/dev/null)
+if [ -n "$def_state" ] && [ "$def_state" != "down" ]; then
+  if ! uname -m | grep -qi '^arm'; then
     case "$def_iface" in
       wl*)
         exiterr "Wireless interface '$def_iface' detected. DO NOT run this script on your PC or Mac!"
@@ -85,13 +85,13 @@ if [ -n "$def_iface_state" ] && [ "$def_iface_state" != "down" ]; then
   net_iface="$def_iface"
 fi
 
-net_iface_state=$(cat "/sys/class/net/$net_iface/operstate" 2>/dev/null)
-if [ -z "$net_iface_state" ] || [ "$net_iface_state" = "down" ] || [ "$net_iface" = "lo" ]; then
+net_state=$(cat "/sys/class/net/$net_iface/operstate" 2>/dev/null)
+if [ -z "$net_state" ] || [ "$net_state" = "down" ] || [ "$net_iface" = "lo" ]; then
   printf "Error: Network interface '%s' is not available.\n" "$net_iface" >&2
   if [ -z "$VPN_NET_IFACE" ]; then
 cat 1>&2 <<EOF
-Unable to detect the default network interface. Manually re-run this script with:
-  sudo VPN_NET_IFACE="your_default_interface_name" sh "$0"
+Could not detect the default network interface. Re-run this script with:
+  sudo VPN_NET_IFACE="default_interface_name" sh "$0"
 EOF
   fi
   exit 1
@@ -126,18 +126,21 @@ bigecho "VPN setup in progress... Please be patient."
 
 # Create and change to working dir
 mkdir -p /opt/src
-cd /opt/src || exiterr "Cannot enter /opt/src."
+cd /opt/src || exit 1
 
-bigecho "Populating apt-get cache..."
-
-# Wait up to 60s for apt/dpkg lock
 count=0
-while fuser /var/lib/apt/lists/lock /var/lib/dpkg/lock >/dev/null 2>&1; do
-  [ "$count" -ge "20" ] && exiterr "Cannot get apt/dpkg lock."
+APT_LK=/var/lib/apt/lists/lock
+PKG_LK=/var/lib/dpkg/lock
+while fuser "$APT_LK" "$PKG_LK" >/dev/null 2>&1 \
+  || lsof "$APT_LK" >/dev/null 2>&1 || lsof "$PKG_LK" >/dev/null 2>&1; do
+  [ "$count" = "0" ] && bigecho "Waiting for apt to be available..."
+  [ "$count" -ge "60" ] && exiterr "Could not get apt/dpkg lock."
   count=$((count+1))
   printf '%s' '.'
   sleep 3
 done
+
+bigecho "Populating apt-get cache..."
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get -yq update || exiterr "'apt-get update' failed."
@@ -145,7 +148,7 @@ apt-get -yq update || exiterr "'apt-get update' failed."
 bigecho "Installing packages required for setup..."
 
 apt-get -yq install wget dnsutils openssl \
-  iproute gawk grep sed net-tools || exiterr2
+  iptables iproute2 gawk grep sed net-tools || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
 
@@ -157,19 +160,35 @@ EOF
 # In case auto IP discovery fails, enter server's public IP here.
 PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 
-# Try to auto discover IP of this server
 [ -z "$PUBLIC_IP" ] && PUBLIC_IP=$(dig @resolver1.opendns.com -t A -4 myip.opendns.com +short)
 
-# Check IP for correct format
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot detect this server's public IP. Edit the script and manually enter it."
 
-bigecho "Installing packages required for the VPN + TOR..."
+bigecho "Installing packages required for the VPN..."
 
-apt-get -yq install tor libnss3-dev libnspr4-dev pkg-config \
+apt-get -yq install libnss3-dev libnspr4-dev pkg-config \
   libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev \
   libcurl4-nss-dev flex bison gcc make libnss3-tools \
   libevent-dev ppp xl2tpd || exiterr2
+
+case "$(uname -r)" in
+  4.14*|4.15*)
+    L2TP_VER=1.3.12
+    l2tp_file="xl2tpd-$L2TP_VER.tar.gz"
+    l2tp_url1="https://github.com/xelerance/xl2tpd/archive/v$L2TP_VER.tar.gz"
+    l2tp_url2="https://mirrors.kernel.org/ubuntu/pool/universe/x/xl2tpd/xl2tpd_$L2TP_VER.orig.tar.gz"
+    apt-get -yq install libpcap0.8-dev || exiterr2
+    if ! { wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url1" || wget -t 3 -T 30 -nv -O "$l2tp_file" "$l2tp_url2"; }; then
+      exit 1
+    fi
+    /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
+    tar xzf "$l2tp_file" && /bin/rm -f "$l2tp_file"
+    cd "xl2tpd-$L2TP_VER" && make -s 2>/dev/null && PREFIX=/usr make -s install
+    cd /opt/src || exit 1
+    /bin/rm -rf "/opt/src/xl2tpd-$L2TP_VER"
+    ;;
+esac
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
@@ -177,17 +196,17 @@ apt-get -yq install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
-SWAN_VER=3.23
+SWAN_VER=3.22
 swan_file="libreswan-$SWAN_VER.tar.gz"
 swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
 swan_url2="https://download.libreswan.org/$swan_file"
 if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
-  exiterr "Cannot download Libreswan source."
+  exit 1
 fi
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$SWAN_VER" || exiterr "Cannot enter Libreswan source dir."
-sed -i '/docker-targets\.mk/d' Makefile
+cd "libreswan-$SWAN_VER" || exit 1
+sed -i '/^#define LSWBUF_CANARY/s/-2$/((char) -2)/' include/lswlog.h
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS =
 USE_DNSSEC = false
@@ -199,8 +218,7 @@ NPROCS="$(grep -c ^processor /proc/cpuinfo)"
 [ -z "$NPROCS" ] && NPROCS=1
 make "-j$((NPROCS+1))" -s base && make -s install-base
 
-# Verify the install and clean up
-cd /opt/src || exiterr "Cannot enter /opt/src."
+cd /opt/src || exit 1
 /bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
 if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   exiterr "Libreswan $SWAN_VER failed to build."
@@ -216,7 +234,7 @@ XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
 DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 
-# Create IPsec (Libreswan) config
+# Create IPsec config
 conf_bk "/etc/ipsec.conf"
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -239,7 +257,7 @@ conn shared
   dpddelay=30
   dpdtimeout=120
   dpdaction=clear
-  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512
+  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024
   phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512
   sha2-truncbug=yes
 
@@ -255,7 +273,8 @@ conn xauth-psk
   auto=add
   leftsubnet=0.0.0.0/0
   rightaddresspool=$XAUTH_POOL
-  modecfgdns="DNS_SRV2"
+  modecfgdns1=$DNS_SRV1
+  modecfgdns2=$DNS_SRV2
   leftxauthserver=yes
   rightxauthclient=yes
   leftmodecfgserver=yes
@@ -268,12 +287,12 @@ conn xauth-psk
   also=shared
 EOF
 
-# Workarounds for systems with ARM CPU (e.g. Raspberry Pi)
-# - Set "left" to private IP instead of "%defaultroute"
-# - Remove unsupported ESP algorithm
-if [ "$(uname -m | cut -c1-3)" = "arm" ]; then
-  PRIVATE_IP=$(ip -4 route get 1 | awk '{print $NF;exit}')
+if ip -4 route list 0/0 2>/dev/null | grep -qs ' src '; then
+  PRIVATE_IP=$(ip -4 route get 1 | sed 's/ uid .*//' | awk '{print $NF;exit}')
   check_ip "$PRIVATE_IP" && sed -i "s/left=%defaultroute/left=$PRIVATE_IP/" /etc/ipsec.conf
+fi
+
+if uname -m | grep -qi '^arm'; then
   sed -i '/phase2alg/s/,aes256-sha2_512//' /etc/ipsec.conf
 fi
 
@@ -307,6 +326,7 @@ cat > /etc/ppp/options.xl2tpd <<EOF
 ipcp-accept-local
 ipcp-accept-remote
 ms-dns $DNS_SRV1
+ms-dns $DNS_SRV2
 noccp
 auth
 mtu 1280
@@ -369,7 +389,7 @@ fi
 
 bigecho "Updating IPTables rules..."
 
-# Check if IPTables rules need updating
+# Check if rules need updating
 ipt_flag=0
 IPT_FILE="/etc/iptables.rules"
 if ! grep -qs "hwdsl2 VPN script" "$IPT_FILE" \
@@ -403,7 +423,6 @@ if [ "$ipt_flag" = "1" ]; then
   echo "# Modified by hwdsl2 VPN script" > "$IPT_FILE"
   iptables-save >> "$IPT_FILE"
 
-  # Update rules for iptables-persistent
   IPT_FILE2="/etc/iptables/rules.v4"
   if [ -f "$IPT_FILE2" ]; then
     conf_bk "$IPT_FILE2"
@@ -418,21 +437,6 @@ cat > /etc/network/if-pre-up.d/iptablesload <<'EOF'
 #!/bin/sh
 iptables-restore < /etc/iptables.rules
 exit 0
-EOF
-
-cat >> /etc/tor/torrc <<'EOF'
-# Added by hwdsl2 VPN script
-VirtualAddrNetworkIPv4 10.192.0.0/10
-AutomapHostsOnResolve 1
-TransPort 9040
-TransListenAddress 192.168.42.1
-DNSPort 53
-DNSListenAddress 192.168.42.1
-
-AccountingStart day 0:00
-AccountingMax 10 GBytes
-RelayBandwidthRate 100 KBytes
-RelayBandwidthBurst 500 KBytes
 EOF
 
 for svc in fail2ban ipsec xl2tpd; do
@@ -452,7 +456,7 @@ cat >> /etc/rc.local <<'EOF'
 (sleep 15
 service ipsec restart
 service xl2tpd restart
-[ -f "/usr/sbin/netplan" ] && iptables-restore < /etc/iptables.rules
+[ -f "/usr/sbin/netplan" ] && { iptables-restore < /etc/iptables.rules; service fail2ban restart; }
 echo 1 > /proc/sys/net/ipv4/ip_forward)&
 exit 0
 EOF
@@ -471,6 +475,7 @@ chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 iptables-restore < "$IPT_FILE"
 
 # Restart services
+mkdir -p /run/pluto
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
